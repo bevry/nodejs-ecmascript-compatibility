@@ -18,6 +18,8 @@ const [_filename, _dirname] = filedirname()
 import {
 	NodeCompatibilityVersionIdentifier,
 	fetchNodeVersionCompatibility,
+	fetchMutualCompatibleESVersionsForNodeVersions,
+	fetchExclusiveCompatibleESVersionsForNodeVersions,
 } from './index.js'
 
 // prepare
@@ -25,7 +27,7 @@ const fixtures = join(_dirname, '../test-fixtures')
 
 // Test
 kava.suite('@bevry/nodejs-ecmascript-compatibility', function (suite, test) {
-	test('manual', function (done) {
+	test('v4 manual', function (done) {
 		const version = '4.9.1'
 		const file = join(fixtures, version + '.json')
 		// fetch
@@ -35,12 +37,143 @@ kava.suite('@bevry/nodejs-ecmascript-compatibility', function (suite, test) {
 					.then((expected) => {
 						// check
 						deepEqual(result, expected, `${version} result matched fixture`)
+						deepEqual(
+							result.esVersionsCompatible,
+							['ES1', 'ES2', 'ES3', 'ES5'],
+							`${version} es compat and sort order was as expected`
+						)
+						deepEqual(
+							result.esVersionsThreshold,
+							[],
+							`${version} es compat and sort order was as expected`
+						)
 						done()
 					})
 					.catch((err) => {
 						// write
 						writeJSON(file, result).finally(() => done(err))
 					})
+			})
+			.catch(done)
+	})
+	test('v14 manual', function (done) {
+		// copy and paste from above
+		const version = '14.0.0'
+		const file = join(fixtures, version + '.json')
+		// fetch
+		fetchNodeVersionCompatibility(version)
+			.then(function (result) {
+				readJSON(file)
+					.then((expected) => {
+						// check
+						deepEqual(result, expected, `${version} result matched fixture`)
+						deepEqual(
+							result.esVersionsCompatible,
+							[
+								'ES1',
+								'ES2',
+								'ES3',
+								'ES5',
+								'ES2015',
+								'ES2016',
+								'ES2017',
+								'ES2018',
+								'ES2019',
+							],
+							`${version} es compat and sort order was as expected`
+						)
+						deepEqual(
+							result.esVersionsThreshold,
+							['ES2015', 'ES2016', 'ES2017', 'ES2018', 'ES2019'],
+							`${version} es compat and sort order was as expected`
+						)
+						done()
+					})
+					.catch((err) => {
+						// write
+						writeJSON(file, result).finally(() => done(err))
+					})
+			})
+			.catch(done)
+	})
+	test('v4 and v12 compat go down to lowest common denominator', function (done) {
+		fetchMutualCompatibleESVersionsForNodeVersions(['12.0.0', '4.9.1'])
+			.then((result) => {
+				deepEqual(result, ['ES1', 'ES2', 'ES3', 'ES5'], 'as expected')
+				done()
+			})
+			.catch(done)
+	})
+	test('v12 and v14 compat go down to lowest common denominator', function (done) {
+		fetchMutualCompatibleESVersionsForNodeVersions(['14.0.0', '12.0.0'])
+			.then((result) => {
+				deepEqual(
+					result,
+					['ES1', 'ES2', 'ES3', 'ES5', 'ES2015', 'ES2016', 'ES2017', 'ES2018'],
+					'as expected'
+				)
+				done()
+			})
+			.catch(done)
+	})
+	test('v14 and v14 keeps its own compat', function (done) {
+		fetchMutualCompatibleESVersionsForNodeVersions(['14.0.0', '14.0.0'])
+			.then((result) => {
+				return fetchNodeVersionCompatibility('14.0.0').then(function (
+					insideResult
+				) {
+					deepEqual(
+						result,
+						[
+							'ES1',
+							'ES2',
+							'ES3',
+							'ES5',
+							'ES2015',
+							'ES2016',
+							'ES2017',
+							'ES2018',
+							'ES2019',
+						],
+						'as expected'
+					)
+					deepEqual(
+						result,
+						insideResult.esVersionsCompatible,
+						'as api returned'
+					)
+					done()
+				})
+			})
+			.catch(done)
+	})
+	test('v4 and v14 exclusive compat match v14', function (done) {
+		fetchExclusiveCompatibleESVersionsForNodeVersions(['14.0.0', '4.9.1'])
+			.then((result) => {
+				deepEqual(
+					result,
+					[
+						'ES1',
+						'ES2',
+						'ES3',
+						'ES5',
+						'ES2015',
+						'ES2016',
+						'ES2017',
+						'ES2018',
+						'ES2019',
+					],
+					'as expected'
+				)
+				done()
+			})
+			.catch(done)
+	})
+	test('compatibility', function (done) {
+		fetchMutualCompatibleESVersionsForNodeVersions(['4.9.1', '12.0.0'])
+			.then((result) => {
+				console.log(result)
+				done()
 			})
 			.catch(done)
 	})

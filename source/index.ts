@@ -3,6 +3,23 @@ import Errlop from 'errlop'
 import fetch from 'node-fetch'
 import { versions as processVersions } from 'process'
 
+// related
+import {
+	compareESVersionIdentifier,
+	getESVersionsByDate,
+	getESVersionsByNow,
+} from '@bevry/ecmascript-versions'
+import {
+	preloadNodeReleases,
+	getNodeReleaseInformation,
+} from '@bevry/nodejs-releases'
+
+/**
+ * The default threshold, is 0.98.
+ * This is because Node.js v14 supports 100% of ES2018, but only 98% of ES2017.
+ */
+const THRESHOLD = 0.98
+
 /**
  * A complete Node.js version number with optional feature flag.
  * @example `"4.9.1"`
@@ -20,7 +37,7 @@ export type NodeReleaseVersionInput = string | number
 export type NodeReleaseVersionFlag = '' | '--es_staging' | '--harmony'
 
 /**
- * A complete ECMAScript version identifier .
+ * A complete ECMAScript version identifier.
  * @example `"ES2015"` or `"ES5"`
  */
 export type ESVersionIdentifier = string
@@ -82,6 +99,28 @@ export interface NodeCompatibilityResult {
 
 	/** The V8 version that this Node.js version used, which this compatibility result is for. */
 	v8: string
+
+	/**
+	 * The ECMAScript versions that are considered compatible.
+	 * Adds any missing ECMAScript versions that are compatible that the API forgot.
+	 * ESNext is not included, as it is ambiguous.
+	 * Sorted by oldest ratification date first.
+	 */
+	esVersionsCompatible: Array<ESVersionIdentifier>
+
+	/**
+	 * The ECMAScript versions that are passed the threshold.
+	 * ESNext is not included, as it is ambiguous.
+	 * Sorted by oldest ratification date first.
+	 */
+	esVersionsThreshold: Array<ESVersionIdentifier>
+
+	/**
+	 * The ECMAScript versions that were tested.
+	 * ESNext is not included, as it is ambiguous.
+	 * Sorted by oldest ratification date first.
+	 */
+	esVersionsTested: Array<ESVersionIdentifier>
 
 	/**
 	 * The compatibility details for each ECMAScript version.
@@ -146,10 +185,12 @@ type Response = {
 /** Fetch the ECMAScript compatibility information for the specific Node.js version, defaulting to the current version with no flags. */
 export async function fetchNodeVersionCompatibility(
 	nodeVersion: string = processVersions.node,
-	nodeFlag: NodeReleaseVersionFlag = ''
+	nodeFlag: NodeReleaseVersionFlag = '',
+	threshold: number = THRESHOLD
 ): Promise<NodeCompatibilityResult> {
 	// from from cache
-	const nodeVersionIdentifier = nodeVersion + nodeFlag
+	const nodeVersionIdentifier: NodeCompatibilityVersionIdentifier =
+		nodeVersion + nodeFlag
 	if (results.has(nodeVersionIdentifier)) {
 		return results.get(nodeVersionIdentifier)!
 	}
@@ -161,13 +202,16 @@ export async function fetchNodeVersionCompatibility(
 		const resp = await fetch(url, {})
 		const json = (await resp.json()) as Response
 
+		// threshold
+		const esVersionsCompatible: Array<ESVersionIdentifier> = []
+		const esVersionsThreshold: Array<ESVersionIdentifier> = []
+		const esVersionsTested: Array<ESVersionIdentifier> = []
+
 		// prepare
-		const nodeCompatibilityResult: NodeCompatibilityResult = {
-			nodeVersion,
-			nodeFlag,
-			v8: json._engine,
-			compatibility: new Map(),
-		}
+		const nodeCompatibility: Map<
+			ESVersionIdentifier,
+			ESVersionCompatibilityResult
+		> = new Map()
 
 		// esversions
 		for (const [esVersionIdentifier, esVersionResponse] of Object.entries(
@@ -194,6 +238,12 @@ export async function fetchNodeVersionCompatibility(
 				compatibility: new Map(),
 			}
 
+			// threshold
+			esVersionsTested.push(esVersionIdentifier)
+
+			// add to node compatibility
+			nodeCompatibility.set(esVersionIdentifier, esVersionCompatibility)
+
 			// esfeatures
 			for (const [
 				esFeatureIdentifier,
@@ -209,16 +259,48 @@ export async function fetchNodeVersionCompatibility(
 			}
 
 			// apply
-			nodeCompatibilityResult.compatibility.set(
-				esVersionIdentifier,
-				esVersionCompatibility
-			)
+			nodeCompatibility.set(esVersionIdentifier, esVersionCompatibility)
 		}
 
-		//  apply
-		results.set(nodeVersionIdentifier, nodeCompatibilityResult)
+		// threshold
+		// remove esnext, as sorting needs a non-ambiguous ratification date
+		esVersionsTested
+			.filter((i) => i.toLocaleLowerCase() !== 'esnext')
+			.sort(compareESVersionIdentifier)
+		esVersionsThreshold.push(
+			...esVersionsTested.filter(
+				(i) => nodeCompatibility.get(i)!.percent >= threshold
+			)
+		)
+		esVersionsThreshold.sort(compareESVersionIdentifier) // for some strange reason, this is required
+		// fetch all the versions by the release date
+		const firstVersion = nodeVersion.replace(/^([0-9]+).+$/, '$1.0.0')
+		await preloadNodeReleases()
+		const release = getNodeReleaseInformation(firstVersion)
+		const esVersionsReleased = getESVersionsByDate(release.date)
+		// add the es versions that were released by then, and seem to be compatible
+		for (const esVersionReleased of esVersionsReleased) {
+			if (
+				esVersionsTested.includes(esVersionReleased) &&
+				esVersionsThreshold.includes(esVersionReleased) === false
+			) {
+				break
+			}
+			esVersionsCompatible.push(esVersionReleased)
+		}
 
 		// return
+		const nodeCompatibilityResult: NodeCompatibilityResult = {
+			nodeVersion,
+			nodeFlag,
+			v8: json._engine,
+			compatibility: nodeCompatibility,
+			// threshold
+			esVersionsCompatible,
+			esVersionsThreshold,
+			esVersionsTested,
+		}
+		results.set(nodeVersionIdentifier, nodeCompatibilityResult)
 		return nodeCompatibilityResult
 	} catch (err) {
 		throw new Errlop(
@@ -231,11 +313,69 @@ export async function fetchNodeVersionCompatibility(
 /** Fetch the compatibility for multiple Node.js versions */
 export async function fetchNodeVersionsCompatibility(
 	versions: Array<string>,
-	NodeReleaseVersionFlag: NodeReleaseVersionFlag = ''
+	nodeFlag: NodeReleaseVersionFlag = '',
+	threshold: number = THRESHOLD
 ): Promise<Array<NodeCompatibilityResult>> {
 	return Promise.all(
 		versions.map((version) =>
-			fetchNodeVersionCompatibility(version, NodeReleaseVersionFlag)
+			fetchNodeVersionCompatibility(version, nodeFlag, threshold)
 		)
 	)
+}
+
+/**
+ * Fetch the ECMAScript versions that are mutually compatible with all the Node.js versions.
+ * To phrase another way, gets the lowest common denominator of compatible ECMAScript versions.
+ */
+export async function fetchMutualCompatibleESVersionsForNodeVersions(
+	versions: Array<string>,
+	nodeFlag: NodeReleaseVersionFlag = '',
+	threshold: number = THRESHOLD
+): Promise<Array<ESVersionIdentifier>> {
+	const esVersions = new Set<ESVersionIdentifier>()
+	const results = await fetchNodeVersionsCompatibility(
+		versions,
+		nodeFlag,
+		threshold
+	)
+	for (const result of results) {
+		if (esVersions.size) {
+			// remove anything that isn't still present
+			for (const esVersion of esVersions) {
+				if (result.esVersionsCompatible.includes(esVersion) === false) {
+					esVersions.delete(esVersion)
+				}
+			}
+		} else {
+			// add initial
+			for (const esVersion of result.esVersionsCompatible) {
+				esVersions.add(esVersion)
+			}
+		}
+	}
+	return Array.from(esVersions.values()).sort(compareESVersionIdentifier)
+}
+
+/**
+ * Fetch the ECMAScript versions that are exclusively compatible with all the Node.js versions.
+ * To phrase another way, gets all ECMAScript versions that were compatible with at least one of the specified Node.js versions, regardless of variance between the Node.js version compatibility.
+ * In practice, this will probably just get the ECMAScript versions of the most recent Node.js version that was mentioned.
+ */
+export async function fetchExclusiveCompatibleESVersionsForNodeVersions(
+	versions: Array<string>,
+	nodeFlag: NodeReleaseVersionFlag = '',
+	threshold: number = THRESHOLD
+): Promise<Array<ESVersionIdentifier>> {
+	const esVersions = new Set<ESVersionIdentifier>()
+	const results = await fetchNodeVersionsCompatibility(
+		versions,
+		nodeFlag,
+		threshold
+	)
+	for (const result of results) {
+		for (const esVersion of result.esVersionsCompatible) {
+			esVersions.add(esVersion)
+		}
+	}
+	return Array.from(esVersions.values()).sort(compareESVersionIdentifier)
 }
