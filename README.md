@@ -43,6 +43,7 @@ import {
     fetchNodeVersionsCompatibility,
     fetchMutualCompatibleESVersionsForNodeVersions,
     fetchExclusiveCompatibleESVersionsForNodeVersions,
+    fetchAllCompatibleESVersionsForNodeVersions,
 } from '@bevry/nodejs-ecmascript-compatibility'
 
 // fetch the compatibility information for the current node.js version
@@ -54,13 +55,18 @@ fetchNodeVersionCompatibility('4.9.1').then(console.log)
 // fetch the details for multiple node.js versions
 fetchNodeVersionsCompatibility(['4.9.1', '12.0.0']).then(console.log)
 
-// fetch the ECMAScript versions that support both releases
+// fetch each ECMAScript version that supports both releases
 fetchMutualCompatibleESVersionsForNodeVersions(['4.9.1', '12.0.0']).then(
     console.log
 )
 
-// fetch the ECMAScript versions that either release supports
+// fetch the minimum ECMAScript versions required to support both releases
 fetchExclusiveCompatibleESVersionsForNodeVersions(['4.9.1', '12.0.0']).then(
+    console.log
+)
+
+// fetch each ECMAScript version that supports either release
+fetchAllCompatibleESVersionsForNodeVersions(['4.9.1', '12.0.0']).then(
     console.log
 )
 ```
@@ -80,7 +86,7 @@ fetchExclusiveCompatibleESVersionsForNodeVersions(['4.9.1', '12.0.0']).then(
 
 ``` html
 <script type="module">
-    import * as pkg from '//cdn.skypack.dev/@bevry/nodejs-ecmascript-compatibility@^3.0.0'
+    import * as pkg from '//cdn.skypack.dev/@bevry/nodejs-ecmascript-compatibility@^4.0.0'
 </script>
 ```
 
@@ -88,7 +94,7 @@ fetchExclusiveCompatibleESVersionsForNodeVersions(['4.9.1', '12.0.0']).then(
 
 ``` html
 <script type="module">
-    import * as pkg from '//unpkg.com/@bevry/nodejs-ecmascript-compatibility@^3.0.0'
+    import * as pkg from '//unpkg.com/@bevry/nodejs-ecmascript-compatibility@^4.0.0'
 </script>
 ```
 
@@ -96,7 +102,7 @@ fetchExclusiveCompatibleESVersionsForNodeVersions(['4.9.1', '12.0.0']).then(
 
 ``` html
 <script type="module">
-    import * as pkg from '//dev.jspm.io/@bevry/nodejs-ecmascript-compatibility@3.0.0'
+    import * as pkg from '//dev.jspm.io/@bevry/nodejs-ecmascript-compatibility@4.0.0'
 </script>
 ```
 

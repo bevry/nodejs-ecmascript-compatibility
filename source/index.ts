@@ -326,6 +326,7 @@ export async function fetchNodeVersionsCompatibility(
 /**
  * Fetch the ECMAScript versions that are mutually compatible with all the Node.js versions.
  * To phrase another way, gets the lowest common denominator of compatible ECMAScript versions.
+ * In practice, this will probably just get the ECMAScript versions of the oldest Node.js version that was mentioned.
  */
 export async function fetchMutualCompatibleESVersionsForNodeVersions(
 	versions: Array<string>,
@@ -333,22 +334,22 @@ export async function fetchMutualCompatibleESVersionsForNodeVersions(
 	threshold: number = THRESHOLD
 ): Promise<Array<ESVersionIdentifier>> {
 	const esVersions = new Set<ESVersionIdentifier>()
-	const results = await fetchNodeVersionsCompatibility(
+	const allNodeCompat = await fetchNodeVersionsCompatibility(
 		versions,
 		nodeFlag,
 		threshold
 	)
-	for (const result of results) {
+	for (const nodeCompat of allNodeCompat) {
 		if (esVersions.size) {
 			// remove anything that isn't still present
 			for (const esVersion of esVersions) {
-				if (result.esVersionsCompatible.includes(esVersion) === false) {
+				if (nodeCompat.esVersionsCompatible.includes(esVersion) === false) {
 					esVersions.delete(esVersion)
 				}
 			}
 		} else {
 			// add initial
-			for (const esVersion of result.esVersionsCompatible) {
+			for (const esVersion of nodeCompat.esVersionsCompatible) {
 				esVersions.add(esVersion)
 			}
 		}
@@ -357,9 +358,8 @@ export async function fetchMutualCompatibleESVersionsForNodeVersions(
 }
 
 /**
- * Fetch the ECMAScript versions that are exclusively compatible with all the Node.js versions.
- * To phrase another way, gets all ECMAScript versions that were compatible with at least one of the specified Node.js versions, regardless of variance between the Node.js version compatibility.
- * In practice, this will probably just get the ECMAScript versions of the most recent Node.js version that was mentioned.
+ * Fetches the latest compatible ECMAScript version for each Node.js version, and remove duplicates.
+ * Use this to know what unique ECMAScript compile targets you need to generate for, without generating any targets that are unnecessary.
  */
 export async function fetchExclusiveCompatibleESVersionsForNodeVersions(
 	versions: Array<string>,
@@ -367,13 +367,36 @@ export async function fetchExclusiveCompatibleESVersionsForNodeVersions(
 	threshold: number = THRESHOLD
 ): Promise<Array<ESVersionIdentifier>> {
 	const esVersions = new Set<ESVersionIdentifier>()
-	const results = await fetchNodeVersionsCompatibility(
+	const allNodeCompat = await fetchNodeVersionsCompatibility(
 		versions,
 		nodeFlag,
 		threshold
 	)
-	for (const result of results) {
-		for (const esVersion of result.esVersionsCompatible) {
+	for (const nodeCompat of allNodeCompat) {
+		for (const esVersion of nodeCompat.esVersionsCompatible.slice(-1)) {
+			esVersions.add(esVersion)
+		}
+	}
+	return Array.from(esVersions.values()).sort(compareESVersionIdentifier)
+}
+
+/**
+ * Fetches all the ECMAScript versions were compatible with any of the Node.js versions.
+ * In practice, this will probably just get the ECMAScript versions of the newest Node.js version that was mentioned.
+ */
+export async function fetchAllCompatibleESVersionsForNodeVersions(
+	versions: Array<string>,
+	nodeFlag: NodeReleaseVersionFlag = '',
+	threshold: number = THRESHOLD
+): Promise<Array<ESVersionIdentifier>> {
+	const esVersions = new Set<ESVersionIdentifier>()
+	const allNodeCompat = await fetchNodeVersionsCompatibility(
+		versions,
+		nodeFlag,
+		threshold
+	)
+	for (const nodeCompat of allNodeCompat) {
+		for (const esVersion of nodeCompat.esVersionsCompatible) {
 			esVersions.add(esVersion)
 		}
 	}

@@ -20,6 +20,7 @@ import {
 	fetchNodeVersionCompatibility,
 	fetchMutualCompatibleESVersionsForNodeVersions,
 	fetchExclusiveCompatibleESVersionsForNodeVersions,
+	fetchAllCompatibleESVersionsForNodeVersions,
 } from './index.js'
 
 // prepare
@@ -147,8 +148,8 @@ kava.suite('@bevry/nodejs-ecmascript-compatibility', function (suite, test) {
 			})
 			.catch(done)
 	})
-	test('v4 and v14 exclusive compat match v14', function (done) {
-		fetchExclusiveCompatibleESVersionsForNodeVersions(['14.0.0', '4.9.1'])
+	test('v4 and v14 all compat match v14', function (done) {
+		fetchAllCompatibleESVersionsForNodeVersions(['14.0.0', '4.9.1'])
 			.then((result) => {
 				deepEqual(
 					result,
@@ -169,10 +170,10 @@ kava.suite('@bevry/nodejs-ecmascript-compatibility', function (suite, test) {
 			})
 			.catch(done)
 	})
-	test('compatibility', function (done) {
-		fetchMutualCompatibleESVersionsForNodeVersions(['4.9.1', '12.0.0'])
+	test('v4 and v14 exclusive compat ', function (done) {
+		fetchExclusiveCompatibleESVersionsForNodeVersions(['14.0.0', '4.9.1'])
 			.then((result) => {
-				console.log(result)
+				deepEqual(result, ['ES5', 'ES2019'], 'as expected')
 				done()
 			})
 			.catch(done)
