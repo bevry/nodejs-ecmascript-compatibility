@@ -86,7 +86,7 @@ fetchAllCompatibleESVersionsForNodeVersions(['4.9.1', '12.0.0']).then(
 
 ``` html
 <script type="module">
-    import * as pkg from '//cdn.skypack.dev/@bevry/nodejs-ecmascript-compatibility@^4.1.0'
+    import * as pkg from '//cdn.skypack.dev/@bevry/nodejs-ecmascript-compatibility@^4.2.0'
 </script>
 ```
 
@@ -94,7 +94,7 @@ fetchAllCompatibleESVersionsForNodeVersions(['4.9.1', '12.0.0']).then(
 
 ``` html
 <script type="module">
-    import * as pkg from '//unpkg.com/@bevry/nodejs-ecmascript-compatibility@^4.1.0'
+    import * as pkg from '//unpkg.com/@bevry/nodejs-ecmascript-compatibility@^4.2.0'
 </script>
 ```
 
@@ -102,7 +102,7 @@ fetchAllCompatibleESVersionsForNodeVersions(['4.9.1', '12.0.0']).then(
 
 ``` html
 <script type="module">
-    import * as pkg from '//dev.jspm.io/@bevry/nodejs-ecmascript-compatibility@4.1.0'
+    import * as pkg from '//dev.jspm.io/@bevry/nodejs-ecmascript-compatibility@4.2.0'
 </script>
 ```
 

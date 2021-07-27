@@ -1,5 +1,9 @@
 # History
 
+## v4.2.0 2021 July 28
+
+-   For the simpler API methods, it now supports a fallback return pre-seeded by a specified ECMAScript version (defaults to `ES5`) for when the API is inaccessible or the Node.js release has not yet had data added for it, such as Node.js v0.8.x.
+
 ## v4.1.0 2021 July 28
 
 -   Now supports significant Node.js version numbers, such as `12` or `0.12`

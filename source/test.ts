@@ -28,6 +28,23 @@ const fixtures = join(_dirname, '../test-fixtures')
 
 // Test
 kava.suite('@bevry/nodejs-ecmascript-compatibility', function (suite, test) {
+	test('v0.8', function (done) {
+		fetchNodeVersionCompatibility('0.8', '', 0.8, 'ES5')
+			.then(function (result) {
+				const expected = {
+					nodeVersion: '0.8.0',
+					nodeFlag: '',
+					v8: '',
+					compatibility: new Map(),
+					esVersionsCompatible: ['ES1', 'ES2', 'ES3', 'ES5'],
+					esVersionsThreshold: [],
+					esVersionsTested: [],
+				}
+				deepEqual(result, expected, `v0.8 result matched fixture`)
+				done()
+			})
+			.catch(done)
+	})
 	test('v4 manual', function (done) {
 		const version = '4.9.1'
 		const file = join(fixtures, version + '.json')

@@ -2,6 +2,7 @@
 import Errlop from 'errlop'
 import fetch from 'node-fetch'
 import { versions as processVersions } from 'process'
+import { until } from '@bevry/list'
 
 // related
 import {
@@ -15,10 +16,13 @@ import {
 } from '@bevry/nodejs-releases'
 
 /**
- * The default threshold, is 0.98.
- * This is because Node.js v14 supports 100% of ES2018, but only 98% of ES2017.
+ * The default threshold.
+ * It is this value because Node.js v14 supports 100% of ES2018, but only 98% of ES2017.
  */
-const THRESHOLD = 0.98
+export const THRESHOLD = 0.98
+
+/** The default ECMAScript version fallback for the simpler API methods. */
+export const FALLBACK: ESVersionIdentifier = 'ES5'
 
 /**
  * A complete Node.js version number with optional feature flag.
@@ -189,7 +193,8 @@ type Response = {
 export async function fetchNodeVersionCompatibility(
 	nodeVersion: string = processVersions.node,
 	nodeFlag: NodeReleaseVersionFlag = '',
-	threshold: number = THRESHOLD
+	threshold: number = THRESHOLD,
+	fallback?: ESVersionIdentifier
 ): Promise<NodeCompatibilityResult> {
 	// turn a significant Node.js version number into an absolute one
 	const nodeVersionParts = nodeVersion.split('.')
@@ -311,6 +316,19 @@ export async function fetchNodeVersionCompatibility(
 		results.set(nodeVersionIdentifier, nodeCompatibilityResult)
 		return nodeCompatibilityResult
 	} catch (err) {
+		if (fallback) {
+			return {
+				nodeVersion,
+				nodeFlag,
+				v8: '',
+				compatibility: new Map(),
+				// threshold
+				esVersionsCompatible: until(getESVersionsByNow(), fallback, true),
+				esVersionsThreshold: [],
+				esVersionsTested: [],
+			}
+		}
+
 		throw new Errlop(
 			`Failed to fetch the compatibility information for the Node.js version from: ${url}`,
 			err
@@ -322,7 +340,8 @@ export async function fetchNodeVersionCompatibility(
 export async function fetchNodeVersionsCompatibility(
 	versions: Array<string>,
 	nodeFlag: NodeReleaseVersionFlag = '',
-	threshold: number = THRESHOLD
+	threshold: number = THRESHOLD,
+	fallback?: ESVersionIdentifier
 ): Promise<Array<NodeCompatibilityResult>> {
 	return Promise.all(
 		versions.map((version) =>
@@ -339,13 +358,15 @@ export async function fetchNodeVersionsCompatibility(
 export async function fetchMutualCompatibleESVersionsForNodeVersions(
 	versions: Array<string>,
 	nodeFlag: NodeReleaseVersionFlag = '',
-	threshold: number = THRESHOLD
+	threshold: number = THRESHOLD,
+	fallback: ESVersionIdentifier = FALLBACK
 ): Promise<Array<ESVersionIdentifier>> {
 	const esVersions = new Set<ESVersionIdentifier>()
 	const allNodeCompat = await fetchNodeVersionsCompatibility(
 		versions,
 		nodeFlag,
-		threshold
+		threshold,
+		fallback
 	)
 	for (const nodeCompat of allNodeCompat) {
 		if (esVersions.size) {
@@ -372,13 +393,15 @@ export async function fetchMutualCompatibleESVersionsForNodeVersions(
 export async function fetchExclusiveCompatibleESVersionsForNodeVersions(
 	versions: Array<string>,
 	nodeFlag: NodeReleaseVersionFlag = '',
-	threshold: number = THRESHOLD
+	threshold: number = THRESHOLD,
+	fallback: ESVersionIdentifier = FALLBACK
 ): Promise<Array<ESVersionIdentifier>> {
 	const esVersions = new Set<ESVersionIdentifier>()
 	const allNodeCompat = await fetchNodeVersionsCompatibility(
 		versions,
 		nodeFlag,
-		threshold
+		threshold,
+		fallback
 	)
 	for (const nodeCompat of allNodeCompat) {
 		for (const esVersion of nodeCompat.esVersionsCompatible.slice(-1)) {
@@ -395,13 +418,15 @@ export async function fetchExclusiveCompatibleESVersionsForNodeVersions(
 export async function fetchAllCompatibleESVersionsForNodeVersions(
 	versions: Array<string>,
 	nodeFlag: NodeReleaseVersionFlag = '',
-	threshold: number = THRESHOLD
+	threshold: number = THRESHOLD,
+	fallback: ESVersionIdentifier = FALLBACK
 ): Promise<Array<ESVersionIdentifier>> {
 	const esVersions = new Set<ESVersionIdentifier>()
 	const allNodeCompat = await fetchNodeVersionsCompatibility(
 		versions,
 		nodeFlag,
-		threshold
+		threshold,
+		fallback
 	)
 	for (const nodeCompat of allNodeCompat) {
 		for (const esVersion of nodeCompat.esVersionsCompatible) {
