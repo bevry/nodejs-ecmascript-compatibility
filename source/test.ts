@@ -98,7 +98,7 @@ kava.suite('@bevry/nodejs-ecmascript-compatibility', function (suite, test) {
 			.catch(done)
 	})
 	test('v4 and v12 compat go down to lowest common denominator', function (done) {
-		fetchMutualCompatibleESVersionsForNodeVersions(['12.0.0', '4.9.1'])
+		fetchMutualCompatibleESVersionsForNodeVersions(['12', '4.9.1'])
 			.then((result) => {
 				deepEqual(result, ['ES1', 'ES2', 'ES3', 'ES5'], 'as expected')
 				done()
@@ -106,7 +106,7 @@ kava.suite('@bevry/nodejs-ecmascript-compatibility', function (suite, test) {
 			.catch(done)
 	})
 	test('v12 and v14 compat go down to lowest common denominator', function (done) {
-		fetchMutualCompatibleESVersionsForNodeVersions(['14.0.0', '12.0.0'])
+		fetchMutualCompatibleESVersionsForNodeVersions(['14', '12.0.0'])
 			.then((result) => {
 				deepEqual(
 					result,
@@ -118,9 +118,9 @@ kava.suite('@bevry/nodejs-ecmascript-compatibility', function (suite, test) {
 			.catch(done)
 	})
 	test('v14 and v14 keeps its own compat', function (done) {
-		fetchMutualCompatibleESVersionsForNodeVersions(['14.0.0', '14.0.0'])
+		fetchMutualCompatibleESVersionsForNodeVersions(['14', '14.0.0'])
 			.then((result) => {
-				return fetchNodeVersionCompatibility('14.0.0').then(function (
+				return fetchNodeVersionCompatibility('14').then(function (
 					insideResult
 				) {
 					deepEqual(
@@ -149,7 +149,7 @@ kava.suite('@bevry/nodejs-ecmascript-compatibility', function (suite, test) {
 			.catch(done)
 	})
 	test('v4 and v14 all compat match v14', function (done) {
-		fetchAllCompatibleESVersionsForNodeVersions(['14.0.0', '4.9.1'])
+		fetchAllCompatibleESVersionsForNodeVersions(['14', '4.9.1'])
 			.then((result) => {
 				deepEqual(
 					result,
@@ -171,7 +171,7 @@ kava.suite('@bevry/nodejs-ecmascript-compatibility', function (suite, test) {
 			.catch(done)
 	})
 	test('v4 and v14 exclusive compat ', function (done) {
-		fetchExclusiveCompatibleESVersionsForNodeVersions(['14.0.0', '4.9.1'])
+		fetchExclusiveCompatibleESVersionsForNodeVersions(['14', '4.9.1'])
 			.then((result) => {
 				deepEqual(result, ['ES5', 'ES2019'], 'as expected')
 				done()

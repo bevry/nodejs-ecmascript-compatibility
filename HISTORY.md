@@ -1,5 +1,9 @@
 # History
 
+## v4.1.0 2021 July 28
+
+-   Now supports significant Node.js version numbers, such as `12` or `0.12`
+
 ## v4.0.0 2021 July 28
 
 -   Prior `fetchExclusiveCompatibleESVersionsForNodeVersions` is now `fetchAllCompatibleESVersionsForNodeVersions`

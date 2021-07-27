@@ -182,12 +182,20 @@ type Response = {
 // =================================
 // Fetch
 
-/** Fetch the ECMAScript compatibility information for the specific Node.js version, defaulting to the current version with no flags. */
+/**
+ * Fetch the ECMAScript compatibility information for the specific Node.js version, defaulting to the current version with no flags.
+ * Significant Node.js version numbers will be suffixed with `.0` until an absolute Node.js release version number is reached. For example, `12` => `12.0.0`, and `0.12` => `0.12.0`
+ */
 export async function fetchNodeVersionCompatibility(
 	nodeVersion: string = processVersions.node,
 	nodeFlag: NodeReleaseVersionFlag = '',
 	threshold: number = THRESHOLD
 ): Promise<NodeCompatibilityResult> {
+	// turn a significant Node.js version number into an absolute one
+	const nodeVersionParts = nodeVersion.split('.')
+	if (nodeVersion.split('.').length !== 3)
+		nodeVersion = nodeVersionParts.concat('0', '0').slice(0, 3).join('.')
+
 	// from from cache
 	const nodeVersionIdentifier: NodeCompatibilityVersionIdentifier =
 		nodeVersion + nodeFlag
