@@ -345,7 +345,7 @@ export async function fetchNodeVersionsCompatibility(
 ): Promise<Array<NodeCompatibilityResult>> {
 	return Promise.all(
 		versions.map((version) =>
-			fetchNodeVersionCompatibility(version, nodeFlag, threshold)
+			fetchNodeVersionCompatibility(version, nodeFlag, threshold, fallback)
 		)
 	)
 }

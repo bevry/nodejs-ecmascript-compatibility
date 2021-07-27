@@ -45,6 +45,18 @@ kava.suite('@bevry/nodejs-ecmascript-compatibility', function (suite, test) {
 			})
 			.catch(done)
 	})
+	test('legacy', function (done) {
+		fetchAllCompatibleESVersionsForNodeVersions(['0.8', '0.10', '0.12'])
+			.then(function (result) {
+				deepEqual(
+					result,
+					['ES1', 'ES2', 'ES3', 'ES5'],
+					`legacy node results matched fixture`
+				)
+				done()
+			})
+			.catch(done)
+	})
 	test('v4 manual', function (done) {
 		const version = '4.9.1'
 		const file = join(fixtures, version + '.json')
