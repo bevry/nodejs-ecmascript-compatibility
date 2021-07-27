@@ -1,7 +1,7 @@
 {
   "title": "Node.js ECMAScript Compatibility",
   "name": "@bevry/nodejs-ecmascript-compatibility",
-  "version": "4.2.1",
+  "version": "4.3.0",
   "description": "API for the Node.js ECMAScript Compatibility information, such that for a particular Node.js release, you get details on which and how many features of an ECMAScript version are supported.",
   "homepage": "https://github.com/bevry/nodejs-ecmascript-compatibility",
   "license": "MIT",
@@ -17,7 +17,7 @@
     "editions",
     "end",
     "es",
-    "es2020",
+    "es2019",
     "feature",
     "features",
     "fetch",
@@ -122,13 +122,13 @@
       }
     },
     {
-      "description": "TypeScript compiled against ES2020 for Node.js 10 || 12 || 14 with Require for modules",
-      "directory": "edition-es2020",
+      "description": "TypeScript compiled against ES2019 for Node.js 10 || 12 || 14 with Require for modules",
+      "directory": "edition-es2019",
       "entry": "index.js",
       "tags": [
         "compiled",
         "javascript",
-        "es2020",
+        "es2019",
         "require"
       ],
       "engines": {
@@ -137,13 +137,13 @@
       }
     },
     {
-      "description": "TypeScript compiled against ES2020 for Node.js 12 || 14 with Import for modules",
-      "directory": "edition-es2020-esm",
+      "description": "TypeScript compiled against ES2019 for Node.js 12 || 14 with Import for modules",
+      "directory": "edition-es2019-esm",
       "entry": "index.js",
       "tags": [
         "compiled",
         "javascript",
-        "es2020",
+        "es2019",
         "import"
       ],
       "engines": {
@@ -154,11 +154,11 @@
   ],
   "types": "./compiled-types/",
   "type": "module",
-  "main": "edition-es2020/index.js",
+  "main": "edition-es2019/index.js",
   "exports": {
     "node": {
-      "import": "./edition-es2020-esm/index.js",
-      "require": "./edition-es2020/index.js"
+      "import": "./edition-es2019-esm/index.js",
+      "require": "./edition-es2019/index.js"
     },
     "browser": {
       "import": "./edition-browsers/index.js"
@@ -167,40 +167,40 @@
   "browser": "edition-browsers/index.js",
   "module": "edition-browsers/index.js",
   "dependencies": {
-    "@bevry/ecmascript-versions": "^3.2.0",
-    "@bevry/list": "^1.2.0",
+    "@bevry/ecmascript-versions": "^3.3.0",
+    "@bevry/list": "^1.3.0",
     "@bevry/nodejs-releases": "^1.0.0",
     "errlop": "^4.2.0",
     "node-fetch": "^2.6.1"
   },
   "devDependencies": {
-    "@bevry/json": "^1.0.0",
+    "@bevry/json": "^1.1.0",
     "@bevry/update-contributors": "^1.18.0",
     "@typescript-eslint/eslint-plugin": "^4.28.5",
     "@typescript-eslint/parser": "^4.28.5",
-    "assert-helpers": "^8.1.0",
+    "assert-helpers": "^8.2.0",
     "eslint": "^7.31.0",
     "eslint-config-bevry": "^3.23.0",
     "eslint-config-prettier": "^8.3.0",
     "eslint-plugin-prettier": "^3.4.0",
-    "filedirname": "^2.4.0",
-    "kava": "^5.13.0",
+    "filedirname": "^2.5.0",
+    "kava": "^5.14.0",
     "make-deno-edition": "^1.3.0",
     "prettier": "^2.3.2",
     "projectz": "^2.18.0",
     "surge": "^0.23.0",
     "typedoc": "^0.21.4",
     "typescript": "4.3.5",
-    "valid-directory": "^3.6.0",
+    "valid-directory": "^3.7.0",
     "valid-module": "^1.15.0"
   },
   "scripts": {
     "our:clean": "rm -Rf ./docs ./edition* ./es2015 ./es5 ./out ./.next",
-    "our:compile": "npm run our:compile:deno && npm run our:compile:edition-browsers && npm run our:compile:edition-es2020 && npm run our:compile:edition-es2020-esm && npm run our:compile:types",
+    "our:compile": "npm run our:compile:deno && npm run our:compile:edition-browsers && npm run our:compile:edition-es2019 && npm run our:compile:edition-es2019-esm && npm run our:compile:types",
     "our:compile:deno": "make-deno-edition --attempt",
     "our:compile:edition-browsers": "tsc --module ESNext --target ES2020 --outDir ./edition-browsers --project tsconfig.json && ( test ! -d edition-browsers/source || ( mv edition-browsers/source edition-temp && rm -Rf edition-browsers && mv edition-temp edition-browsers ) )",
-    "our:compile:edition-es2020": "tsc --module commonjs --target ES2020 --outDir ./edition-es2020 --project tsconfig.json && ( test ! -d edition-es2020/source || ( mv edition-es2020/source edition-temp && rm -Rf edition-es2020 && mv edition-temp edition-es2020 ) ) && echo '{\"type\": \"commonjs\"}' > edition-es2020/package.json",
-    "our:compile:edition-es2020-esm": "tsc --module ESNext --target ES2020 --outDir ./edition-es2020-esm --project tsconfig.json && ( test ! -d edition-es2020-esm/source || ( mv edition-es2020-esm/source edition-temp && rm -Rf edition-es2020-esm && mv edition-temp edition-es2020-esm ) ) && echo '{\"type\": \"module\"}' > edition-es2020-esm/package.json",
+    "our:compile:edition-es2019": "tsc --module commonjs --target ES2019 --outDir ./edition-es2019 --project tsconfig.json && ( test ! -d edition-es2019/source || ( mv edition-es2019/source edition-temp && rm -Rf edition-es2019 && mv edition-temp edition-es2019 ) ) && echo '{\"type\": \"commonjs\"}' > edition-es2019/package.json",
+    "our:compile:edition-es2019-esm": "tsc --module ESNext --target ES2019 --outDir ./edition-es2019-esm --project tsconfig.json && ( test ! -d edition-es2019-esm/source || ( mv edition-es2019-esm/source edition-temp && rm -Rf edition-es2019-esm && mv edition-temp edition-es2019-esm ) ) && echo '{\"type\": \"module\"}' > edition-es2019-esm/package.json",
     "our:compile:types": "tsc --project tsconfig.json --emitDeclarationOnly --declaration --declarationMap --declarationDir ./compiled-types && ( test ! -d compiled-types/source || ( mv compiled-types/source edition-temp && rm -Rf compiled-types && mv edition-temp compiled-types ) )",
     "our:deploy": "echo no need for this project",
     "our:meta": "npm run our:meta:contributors && npm run our:meta:docs && npm run our:meta:projectz",
@@ -222,7 +222,7 @@
     "our:verify:eslint": "eslint --fix --ignore-pattern '**/*.d.ts' --ignore-pattern '**/vendor/' --ignore-pattern '**/node_modules/' --ext .mjs,.js,.jsx,.ts,.tsx ./source",
     "our:verify:module": "valid-module",
     "our:verify:prettier": "prettier --write .",
-    "test": "node ./edition-es2020/test.js"
+    "test": "node ./edition-es2019/test.js"
   },
   "eslintConfig": {
     "extends": [
