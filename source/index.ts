@@ -10,6 +10,9 @@ import { versions as processVersions } from 'process'
  */
 export type NodeCompatibilityVersionIdentifier = string
 
+/** A complete version number, in the format of `"0.1.14"` */
+export type NodeReleaseVersionIdentifier = string
+
 /** A complete version number, in the format of `0.1.14` or `"0.1.14"` */
 export type NodeReleaseVersionInput = string | number
 
@@ -17,7 +20,7 @@ export type NodeReleaseVersionInput = string | number
 export type NodeReleaseVersionFlag = '' | '--es_staging' | '--harmony'
 
 /**
- * A complete ECMAScript edition/version identifier .
+ * A complete ECMAScript version identifier .
  * @example `"ES2015"` or `"ES5"`
  */
 export type ESVersionIdentifier = string
@@ -39,6 +42,18 @@ export type ESFeatureCompatibilityResult = boolean | string
 
 /** The compatibility results of a specific ECMAScript version. */
 interface ESVersionCompatibilityResult {
+	/** The ECMAScript version identifier for this compatibility result. */
+	esVersion: ESVersionIdentifier
+
+	/** The Node.js version identifier this compatibility result is for. */
+	nodeVersion: NodeReleaseVersionIdentifier
+
+	/** The Node.js version flag this compatibility result is for. */
+	nodeFlag: NodeReleaseVersionFlag
+
+	/** The V8 version that this Node.js version used, which this compatibility result is for. */
+	v8: string
+
 	/** How many features were successful within this ECMAScript version? */
 	successful: number
 
@@ -59,10 +74,13 @@ interface ESVersionCompatibilityResult {
  * The feature compatibility results of all ECMAScript versions against a specific Node.js version.
  */
 export interface NodeCompatibilityResult {
-	/** The Node.js version number this compatibility result is for. */
-	version: NodeCompatibilityVersionIdentifier
+	/** The Node.js version identifier this compatibility result is for. */
+	nodeVersion: NodeReleaseVersionIdentifier
 
-	/** The V8 version of this Node.js version and flag, that this compatibility result is for. */
+	/** The Node.js version flag this compatibility result is for. */
+	nodeFlag: NodeReleaseVersionFlag
+
+	/** The V8 version that this Node.js version used, which this compatibility result is for. */
 	v8: string
 
 	/**
@@ -102,6 +120,7 @@ type Response = {
 	 * @example `8.9.2--harmony`
 	 */
 	_version: NodeCompatibilityVersionIdentifier
+
 	/**
 	 * V8 version
 	 * @example `v8 6.1.534.48`
@@ -144,7 +163,8 @@ export async function fetchNodeVersionCompatibility(
 
 		// prepare
 		const nodeCompatibilityResult: NodeCompatibilityResult = {
-			version: json._version,
+			nodeVersion,
+			nodeFlag,
 			v8: json._engine,
 			compatibility: new Map(),
 		}
@@ -164,6 +184,10 @@ export async function fetchNodeVersionCompatibility(
 
 			// prepare
 			const esVersionCompatibility: ESVersionCompatibilityResult = {
+				esVersion: esVersionIdentifier,
+				nodeVersion,
+				nodeFlag,
+				v8: json._engine,
 				successful: esVersionResponse._successful,
 				total: esVersionResponse._count,
 				percent: esVersionResponse._percent,

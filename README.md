@@ -68,7 +68,7 @@ fetchNodeVersionsCompatibility(['4.9.1', '12.0.0']).then(console.log)
 
 ``` html
 <script type="module">
-    import * as pkg from '//cdn.skypack.dev/@bevry/nodejs-ecmascript-compatibility@^1.0.0'
+    import * as pkg from '//cdn.skypack.dev/@bevry/nodejs-ecmascript-compatibility@^2.0.0'
 </script>
 ```
 
@@ -76,7 +76,7 @@ fetchNodeVersionsCompatibility(['4.9.1', '12.0.0']).then(console.log)
 
 ``` html
 <script type="module">
-    import * as pkg from '//unpkg.com/@bevry/nodejs-ecmascript-compatibility@^1.0.0'
+    import * as pkg from '//unpkg.com/@bevry/nodejs-ecmascript-compatibility@^2.0.0'
 </script>
 ```
 
@@ -84,7 +84,7 @@ fetchNodeVersionsCompatibility(['4.9.1', '12.0.0']).then(console.log)
 
 ``` html
 <script type="module">
-    import * as pkg from '//dev.jspm.io/@bevry/nodejs-ecmascript-compatibility@1.0.0'
+    import * as pkg from '//dev.jspm.io/@bevry/nodejs-ecmascript-compatibility@2.0.0'
 </script>
 ```
 

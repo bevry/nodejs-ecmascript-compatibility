@@ -1,5 +1,6 @@
 {
-  "version": "4.9.1",
+  "nodeVersion": "4.9.1",
+  "nodeFlag": "",
   "v8": "v8 4.5.103.53",
   "compatibility": {
     "dataType": "Map",
@@ -7,6 +8,10 @@
       [
         "ESNEXT",
         {
+          "esVersion": "ESNEXT",
+          "nodeVersion": "4.9.1",
+          "nodeFlag": "",
+          "v8": "v8 4.5.103.53",
           "successful": 2,
           "total": 73,
           "percent": 0.0273972602739726,
@@ -282,6 +287,10 @@
       [
         "ES2022",
         {
+          "esVersion": "ES2022",
+          "nodeVersion": "4.9.1",
+          "nodeFlag": "",
+          "v8": "v8 4.5.103.53",
           "successful": 0,
           "total": 14,
           "percent": 0,
@@ -351,6 +360,10 @@
       [
         "ES2021",
         {
+          "esVersion": "ES2021",
+          "nodeVersion": "4.9.1",
+          "nodeFlag": "",
+          "v8": "v8 4.5.103.53",
           "successful": 0,
           "total": 15,
           "percent": 0,
@@ -421,6 +434,10 @@
       [
         "ES2020",
         {
+          "esVersion": "ES2020",
+          "nodeVersion": "4.9.1",
+          "nodeFlag": "",
+          "v8": "v8 4.5.103.53",
           "successful": 0,
           "total": 19,
           "percent": 0,
@@ -492,6 +509,10 @@
       [
         "ES2019",
         {
+          "esVersion": "ES2019",
+          "nodeVersion": "4.9.1",
+          "nodeFlag": "",
+          "v8": "v8 4.5.103.53",
           "successful": 4,
           "total": 24,
           "percent": 0.16666666666666666,
@@ -574,6 +595,10 @@
       [
         "ES2018",
         {
+          "esVersion": "ES2018",
+          "nodeVersion": "4.9.1",
+          "nodeFlag": "",
+          "v8": "v8 4.5.103.53",
           "successful": 0,
           "total": 13,
           "percent": 0,
@@ -636,6 +661,10 @@
       [
         "ES2017",
         {
+          "esVersion": "ES2017",
+          "nodeVersion": "4.9.1",
+          "nodeFlag": "",
+          "v8": "v8 4.5.103.53",
           "successful": 11,
           "total": 64,
           "percent": 0.171875,
@@ -890,6 +919,10 @@
       [
         "ES2016",
         {
+          "esVersion": "ES2016",
+          "nodeVersion": "4.9.1",
+          "nodeFlag": "",
+          "v8": "v8 4.5.103.53",
           "successful": 1,
           "total": 13,
           "percent": 0.07692307692307693,
@@ -949,6 +982,10 @@
       [
         "ES2015",
         {
+          "esVersion": "ES2015",
+          "nodeVersion": "4.9.1",
+          "nodeFlag": "",
+          "v8": "v8 4.5.103.53",
           "successful": 305,
           "total": 694,
           "percent": 0.43948126801152737,
