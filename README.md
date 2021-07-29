@@ -35,7 +35,7 @@ API for the Node.js ECMAScript Compatibility information, such that for a partic
 
 ## Usage
 
-[Complete API Documentation.](http://master.nodejs-ecmascript-compatibility.bevry.surge.sh/docs/globals.html)
+[Complete API Documentation.](http://master.nodejs-ecmascript-compatibility.bevry.surge.sh/docs/)
 
 ```javascript
 import {
@@ -86,7 +86,7 @@ fetchAllCompatibleESVersionsForNodeVersions(['4.9.1', '12.0.0']).then(
 
 ``` html
 <script type="module">
-    import * as pkg from '//cdn.skypack.dev/@bevry/nodejs-ecmascript-compatibility@^4.4.0'
+    import * as pkg from '//cdn.skypack.dev/@bevry/nodejs-ecmascript-compatibility@^4.5.0'
 </script>
 ```
 
@@ -94,7 +94,7 @@ fetchAllCompatibleESVersionsForNodeVersions(['4.9.1', '12.0.0']).then(
 
 ``` html
 <script type="module">
-    import * as pkg from '//unpkg.com/@bevry/nodejs-ecmascript-compatibility@^4.4.0'
+    import * as pkg from '//unpkg.com/@bevry/nodejs-ecmascript-compatibility@^4.5.0'
 </script>
 ```
 
@@ -102,7 +102,7 @@ fetchAllCompatibleESVersionsForNodeVersions(['4.9.1', '12.0.0']).then(
 
 ``` html
 <script type="module">
-    import * as pkg from '//dev.jspm.io/@bevry/nodejs-ecmascript-compatibility@4.4.0'
+    import * as pkg from '//dev.jspm.io/@bevry/nodejs-ecmascript-compatibility@4.5.0'
 </script>
 ```
 
