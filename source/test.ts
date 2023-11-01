@@ -51,7 +51,7 @@ kava.suite('@bevry/nodejs-ecmascript-compatibility', function (suite, test) {
 				deepEqual(
 					result,
 					['ES1', 'ES2', 'ES3', 'ES5'],
-					`legacy node results matched fixture`
+					`legacy node results matched fixture`,
 				)
 				done()
 			})
@@ -64,24 +64,22 @@ kava.suite('@bevry/nodejs-ecmascript-compatibility', function (suite, test) {
 		fetchNodeVersionCompatibility(version)
 			.then(function (result) {
 				readJSON(file)
+					// update empty/invalid file
+					.catch(() => writeJSON(file, result).then(() => result))
 					.then((expected) => {
 						// check
 						deepEqual(result, expected, `${version} result matched fixture`)
 						deepEqual(
 							result.esVersionsCompatible,
 							['ES1', 'ES2', 'ES3', 'ES5'],
-							`${version} es compat and sort order was as expected`
+							`${version} es compat and sort order was as expected`,
 						)
 						deepEqual(
 							result.esVersionsThreshold,
 							[],
-							`${version} es compat and sort order was as expected`
+							`${version} es threshold and sort order was as expected`,
 						)
 						done()
-					})
-					.catch((err) => {
-						// write
-						writeJSON(file, result).finally(() => done(err))
 					})
 			})
 			.catch(done)
@@ -94,6 +92,8 @@ kava.suite('@bevry/nodejs-ecmascript-compatibility', function (suite, test) {
 		fetchNodeVersionCompatibility(version)
 			.then(function (result) {
 				readJSON(file)
+					// update empty/invalid file
+					.catch(() => writeJSON(file, result).then(() => result))
 					.then((expected) => {
 						// check
 						deepEqual(result, expected, `${version} result matched fixture`)
@@ -110,18 +110,14 @@ kava.suite('@bevry/nodejs-ecmascript-compatibility', function (suite, test) {
 								'ES2018',
 								'ES2019',
 							],
-							`${version} es compat and sort order was as expected`
+							`${version} es compat and sort order was as expected`,
 						)
 						deepEqual(
 							result.esVersionsThreshold,
-							['ES2015', 'ES2016', 'ES2017', 'ES2018', 'ES2019'],
-							`${version} es compat and sort order was as expected`
+							['ES2015', 'ES2016', 'ES2017', 'ES2018', 'ES2019', 'ES2020'],
+							`${version} es threshold and sort order was as expected`,
 						)
 						done()
-					})
-					.catch((err) => {
-						// write
-						writeJSON(file, result).finally(() => done(err))
 					})
 			})
 			.catch(done)
@@ -139,8 +135,8 @@ kava.suite('@bevry/nodejs-ecmascript-compatibility', function (suite, test) {
 			.then((result) => {
 				deepEqual(
 					result,
-					['ES1', 'ES2', 'ES3', 'ES5', 'ES2015', 'ES2016', 'ES2017', 'ES2018'],
-					'as expected'
+					['ES1', 'ES2', 'ES3', 'ES5', 'ES2015', 'ES2016', 'ES2017'],
+					'as expected',
 				)
 				done()
 			})
@@ -149,31 +145,31 @@ kava.suite('@bevry/nodejs-ecmascript-compatibility', function (suite, test) {
 	test('v14 and v14 keeps its own compat', function (done) {
 		fetchMutualCompatibleESVersionsForNodeVersions(['14', '14.0.0'])
 			.then((result) => {
-				return fetchNodeVersionCompatibility('14').then(function (
-					insideResult
-				) {
-					deepEqual(
-						result,
-						[
-							'ES1',
-							'ES2',
-							'ES3',
-							'ES5',
-							'ES2015',
-							'ES2016',
-							'ES2017',
-							'ES2018',
-							'ES2019',
-						],
-						'as expected'
-					)
-					deepEqual(
-						result,
-						insideResult.esVersionsCompatible,
-						'as api returned'
-					)
-					done()
-				})
+				return fetchNodeVersionCompatibility('14').then(
+					function (insideResult) {
+						deepEqual(
+							result,
+							[
+								'ES1',
+								'ES2',
+								'ES3',
+								'ES5',
+								'ES2015',
+								'ES2016',
+								'ES2017',
+								'ES2018',
+								'ES2019',
+							],
+							'as expected',
+						)
+						deepEqual(
+							result,
+							insideResult.esVersionsCompatible,
+							'as api returned',
+						)
+						done()
+					},
+				)
 			})
 			.catch(done)
 	})
@@ -193,7 +189,7 @@ kava.suite('@bevry/nodejs-ecmascript-compatibility', function (suite, test) {
 						'ES2018',
 						'ES2019',
 					],
-					'as expected'
+					'as expected',
 				)
 				done()
 			})
@@ -239,7 +235,7 @@ kava.suite('@bevry/nodejs-ecmascript-compatibility', function (suite, test) {
 	// 							}
 	// 							done()
 	// 						})
-	// 						.catch((err) => {
+	// 						.catch((err: any) => {
 	// 							// missing
 	// 							nowMissing.add(version)
 	// 							if (oldMissing.has(version)) {
