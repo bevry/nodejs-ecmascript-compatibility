@@ -196,7 +196,7 @@ export async function fetchNodeVersionCompatibility(
 	nodeVersion: string = processVersions.node,
 	nodeFlag: NodeReleaseVersionFlag = '',
 	threshold: number = THRESHOLD,
-	fallback?: ESVersionIdentifier
+	fallback?: ESVersionIdentifier,
 ): Promise<NodeCompatibilityResult> {
 	// turn a significant Node.js version number into an absolute one
 	const nodeVersionParts = nodeVersion.split('.')
@@ -236,7 +236,7 @@ export async function fetchNodeVersionCompatibility(
 			// verify we are dealing with es version identifiers
 			if (!esVersionIdentifier.startsWith('ES'))
 				throw new Error(
-					`The object key [${esVersionIdentifier}] was meant to represent an ECMAScript version identifier.`
+					`The object key [${esVersionIdentifier}] was meant to represent an ECMAScript version identifier.`,
 				)
 
 			// prepare
@@ -271,7 +271,7 @@ export async function fetchNodeVersionCompatibility(
 				// apply
 				esVersionCompatibility.compatibility.set(
 					esFeatureIdentifier,
-					esFeatureCompatibilityResult
+					esFeatureCompatibilityResult,
 				)
 			}
 
@@ -286,8 +286,8 @@ export async function fetchNodeVersionCompatibility(
 			.sort(compareESVersionIdentifier)
 		esVersionsThreshold.push(
 			...esVersionsTested.filter(
-				(i) => nodeCompatibility.get(i)!.percent >= threshold
-			)
+				(i) => nodeCompatibility.get(i)!.percent >= threshold,
+			),
 		)
 		esVersionsThreshold.sort(compareESVersionIdentifier) // for some strange reason, this is required
 		// fetch all the versions by the release date
@@ -335,7 +335,7 @@ export async function fetchNodeVersionCompatibility(
 
 		throw new Errlop(
 			`Failed to fetch the compatibility information for the Node.js version from: ${url}`,
-			err
+			err,
 		)
 	}
 }
@@ -345,12 +345,12 @@ export async function fetchNodeVersionsCompatibility(
 	versions: Array<string>,
 	nodeFlag: NodeReleaseVersionFlag = '',
 	threshold: number = THRESHOLD,
-	fallback?: ESVersionIdentifier
+	fallback?: ESVersionIdentifier,
 ): Promise<Array<NodeCompatibilityResult>> {
 	return Promise.all(
 		versions.map((version) =>
-			fetchNodeVersionCompatibility(version, nodeFlag, threshold, fallback)
-		)
+			fetchNodeVersionCompatibility(version, nodeFlag, threshold, fallback),
+		),
 	)
 }
 
@@ -363,14 +363,14 @@ export async function fetchMutualCompatibleESVersionsForNodeVersions(
 	versions: Array<string>,
 	nodeFlag: NodeReleaseVersionFlag = '',
 	threshold: number = THRESHOLD,
-	fallback: ESVersionIdentifier = FALLBACK
+	fallback: ESVersionIdentifier = FALLBACK,
 ): Promise<Array<ESVersionIdentifier>> {
 	const esVersions = new Set<ESVersionIdentifier>()
 	const allNodeCompat = await fetchNodeVersionsCompatibility(
 		versions,
 		nodeFlag,
 		threshold,
-		fallback
+		fallback,
 	)
 	for (const nodeCompat of allNodeCompat) {
 		if (esVersions.size) {
@@ -398,14 +398,14 @@ export async function fetchExclusiveCompatibleESVersionsForNodeVersions(
 	versions: Array<string>,
 	nodeFlag: NodeReleaseVersionFlag = '',
 	threshold: number = THRESHOLD,
-	fallback: ESVersionIdentifier = FALLBACK
+	fallback: ESVersionIdentifier = FALLBACK,
 ): Promise<Array<ESVersionIdentifier>> {
 	const esVersions = new Set<ESVersionIdentifier>()
 	const allNodeCompat = await fetchNodeVersionsCompatibility(
 		versions,
 		nodeFlag,
 		threshold,
-		fallback
+		fallback,
 	)
 	for (const nodeCompat of allNodeCompat) {
 		for (const esVersion of nodeCompat.esVersionsCompatible.slice(-1)) {
@@ -423,14 +423,14 @@ export async function fetchAllCompatibleESVersionsForNodeVersions(
 	versions: Array<string>,
 	nodeFlag: NodeReleaseVersionFlag = '',
 	threshold: number = THRESHOLD,
-	fallback: ESVersionIdentifier = FALLBACK
+	fallback: ESVersionIdentifier = FALLBACK,
 ): Promise<Array<ESVersionIdentifier>> {
 	const esVersions = new Set<ESVersionIdentifier>()
 	const allNodeCompat = await fetchNodeVersionsCompatibility(
 		versions,
 		nodeFlag,
 		threshold,
-		fallback
+		fallback,
 	)
 	for (const nodeCompat of allNodeCompat) {
 		for (const esVersion of nodeCompat.esVersionsCompatible) {

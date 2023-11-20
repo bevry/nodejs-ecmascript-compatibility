@@ -51,7 +51,7 @@ kava.suite('@bevry/nodejs-ecmascript-compatibility', function (suite, test) {
 				deepEqual(
 					result,
 					['ES1', 'ES2', 'ES3', 'ES5'],
-					`legacy node results matched fixture`
+					`legacy node results matched fixture`,
 				)
 				done()
 			})
@@ -72,12 +72,12 @@ kava.suite('@bevry/nodejs-ecmascript-compatibility', function (suite, test) {
 						deepEqual(
 							result.esVersionsCompatible,
 							['ES1', 'ES2', 'ES3', 'ES5'],
-							`${version} es compat and sort order was as expected`
+							`${version} es compat and sort order was as expected`,
 						)
 						deepEqual(
 							result.esVersionsThreshold,
 							[],
-							`${version} es threshold and sort order was as expected`
+							`${version} es threshold and sort order was as expected`,
 						)
 						done()
 					})
@@ -110,12 +110,12 @@ kava.suite('@bevry/nodejs-ecmascript-compatibility', function (suite, test) {
 								'ES2018',
 								'ES2019',
 							],
-							`${version} es compat and sort order was as expected`
+							`${version} es compat and sort order was as expected`,
 						)
 						deepEqual(
 							result.esVersionsThreshold,
 							['ES2015', 'ES2016', 'ES2017', 'ES2018', 'ES2019', 'ES2020'],
-							`${version} es threshold and sort order was as expected`
+							`${version} es threshold and sort order was as expected`,
 						)
 						done()
 					})
@@ -136,7 +136,7 @@ kava.suite('@bevry/nodejs-ecmascript-compatibility', function (suite, test) {
 				deepEqual(
 					result,
 					['ES1', 'ES2', 'ES3', 'ES5', 'ES2015', 'ES2016', 'ES2017'],
-					'as expected'
+					'as expected',
 				)
 				done()
 			})
@@ -160,15 +160,15 @@ kava.suite('@bevry/nodejs-ecmascript-compatibility', function (suite, test) {
 								'ES2018',
 								'ES2019',
 							],
-							'as expected'
+							'as expected',
 						)
 						deepEqual(
 							result,
 							insideResult.esVersionsCompatible,
-							'as api returned'
+							'as api returned',
 						)
 						done()
-					}
+					},
 				)
 			})
 			.catch(done)
@@ -189,7 +189,7 @@ kava.suite('@bevry/nodejs-ecmascript-compatibility', function (suite, test) {
 						'ES2018',
 						'ES2019',
 					],
-					'as expected'
+					'as expected',
 				)
 				done()
 			})

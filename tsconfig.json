@@ -7,8 +7,7 @@
     "moduleResolution": "Node",
     "strict": true,
     "target": "ES2022",
-    "module": "ESNext",
-    "downlevelIteration": true
+    "module": "ESNext"
   },
   "include": ["source"]
 }

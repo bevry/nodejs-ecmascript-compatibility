@@ -57,17 +57,17 @@ fetchNodeVersionsCompatibility(['4.9.1', '12.0.0']).then(console.log)
 
 // fetch each ECMAScript version that supports both releases
 fetchMutualCompatibleESVersionsForNodeVersions(['4.9.1', '12.0.0']).then(
-    console.log
+    console.log,
 )
 
 // fetch the minimum ECMAScript versions required to support both releases
 fetchExclusiveCompatibleESVersionsForNodeVersions(['4.9.1', '12.0.0']).then(
-    console.log
+    console.log,
 )
 
 // fetch each ECMAScript version that supports either release
 fetchAllCompatibleESVersionsForNodeVersions(['4.9.1', '12.0.0']).then(
-    console.log
+    console.log,
 )
 ```
 
@@ -88,7 +88,7 @@ Node.js versions 15 and 16 will need to use `--experimental-global-fetch`.
 
 ``` html
 <script type="module">
-    import * as pkg from '//cdn.skypack.dev/@bevry/nodejs-ecmascript-compatibility@^5.2.0'
+    import * as pkg from '//cdn.skypack.dev/@bevry/nodejs-ecmascript-compatibility@^5.3.0'
 </script>
 ```
 
@@ -96,7 +96,7 @@ Node.js versions 15 and 16 will need to use `--experimental-global-fetch`.
 
 ``` html
 <script type="module">
-    import * as pkg from '//unpkg.com/@bevry/nodejs-ecmascript-compatibility@^5.2.0'
+    import * as pkg from '//unpkg.com/@bevry/nodejs-ecmascript-compatibility@^5.3.0'
 </script>
 ```
 
@@ -104,7 +104,7 @@ Node.js versions 15 and 16 will need to use `--experimental-global-fetch`.
 
 ``` html
 <script type="module">
-    import * as pkg from '//dev.jspm.io/@bevry/nodejs-ecmascript-compatibility@5.2.0'
+    import * as pkg from '//dev.jspm.io/@bevry/nodejs-ecmascript-compatibility@5.3.0'
 </script>
 ```
 
