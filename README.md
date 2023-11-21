@@ -88,7 +88,7 @@ Node.js versions 15 and 16 will need to use `--experimental-global-fetch`.
 
 ``` html
 <script type="module">
-    import * as pkg from '//cdn.skypack.dev/@bevry/nodejs-ecmascript-compatibility@^5.3.0'
+    import * as pkg from '//cdn.skypack.dev/@bevry/nodejs-ecmascript-compatibility@^5.4.0'
 </script>
 ```
 
@@ -96,7 +96,7 @@ Node.js versions 15 and 16 will need to use `--experimental-global-fetch`.
 
 ``` html
 <script type="module">
-    import * as pkg from '//unpkg.com/@bevry/nodejs-ecmascript-compatibility@^5.3.0'
+    import * as pkg from '//unpkg.com/@bevry/nodejs-ecmascript-compatibility@^5.4.0'
 </script>
 ```
 
@@ -104,7 +104,7 @@ Node.js versions 15 and 16 will need to use `--experimental-global-fetch`.
 
 ``` html
 <script type="module">
-    import * as pkg from '//dev.jspm.io/@bevry/nodejs-ecmascript-compatibility@5.3.0'
+    import * as pkg from '//dev.jspm.io/@bevry/nodejs-ecmascript-compatibility@5.4.0'
 </script>
 ```
 
@@ -116,7 +116,8 @@ Node.js versions 15 and 16 will need to use `--experimental-global-fetch`.
 <li><code>@bevry/nodejs-ecmascript-compatibility/edition-browsers/index.js</code> is <a href="https://www.typescriptlang.org/" title="TypeScript is a typed superset of JavaScript that compiles to plain JavaScript. ">TypeScript</a> compiled against ES2022 for web browsers with <a href="https://babeljs.io/docs/learn-es2015/#modules" title="ECMAScript Modules">Import</a> for modules</li>
 <li><code>@bevry/nodejs-ecmascript-compatibility</code> aliases <code>@bevry/nodejs-ecmascript-compatibility/edition-es2022/index.js</code></li>
 <li><code>@bevry/nodejs-ecmascript-compatibility/edition-es2022/index.js</code> is <a href="https://www.typescriptlang.org/" title="TypeScript is a typed superset of JavaScript that compiles to plain JavaScript. ">TypeScript</a> compiled against ES2022 for <a href="https://nodejs.org" title="Node.js is a JavaScript runtime built on Chrome's V8 JavaScript engine">Node.js</a> 18 || 20 || 21 with <a href="https://nodejs.org/dist/latest-v5.x/docs/api/modules.html" title="Node/CJS Modules">Require</a> for modules</li>
-<li><code>@bevry/nodejs-ecmascript-compatibility/edition-es2022-esm/index.js</code> is <a href="https://www.typescriptlang.org/" title="TypeScript is a typed superset of JavaScript that compiles to plain JavaScript. ">TypeScript</a> compiled against ES2022 for <a href="https://nodejs.org" title="Node.js is a JavaScript runtime built on Chrome's V8 JavaScript engine">Node.js</a> 18 || 20 || 21 with <a href="https://babeljs.io/docs/learn-es2015/#modules" title="ECMAScript Modules">Import</a> for modules</li></ul>
+<li><code>@bevry/nodejs-ecmascript-compatibility/edition-es2022-esm/index.js</code> is <a href="https://www.typescriptlang.org/" title="TypeScript is a typed superset of JavaScript that compiles to plain JavaScript. ">TypeScript</a> compiled against ES2022 for <a href="https://nodejs.org" title="Node.js is a JavaScript runtime built on Chrome's V8 JavaScript engine">Node.js</a> 18 || 20 || 21 with <a href="https://babeljs.io/docs/learn-es2015/#modules" title="ECMAScript Modules">Import</a> for modules</li>
+<li><code>@bevry/nodejs-ecmascript-compatibility/edition-types/index.d.ts</code> is <a href="https://www.typescriptlang.org/" title="TypeScript is a typed superset of JavaScript that compiles to plain JavaScript. ">TypeScript</a> compiled Types with <a href="https://babeljs.io/docs/learn-es2015/#modules" title="ECMAScript Modules">Import</a> for modules</li></ul>
 
 <!-- /INSTALL -->
 
